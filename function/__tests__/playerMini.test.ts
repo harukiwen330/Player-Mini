@@ -1,4 +1,4 @@
-import {parseDurationToSeconds} from "../try";
+import {parseDurationToSeconds} from "../playerMini";
 describe("parseDurationToSeconds", () => {
     const testCases = [
         {input: "PT1M1.2S", expected: 61.2},
