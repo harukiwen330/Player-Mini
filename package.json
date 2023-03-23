@@ -1,0 +1,28 @@
+{
+  "name": "player-mini",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harukiwen330/Player-Mini.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/harukiwen330/Player-Mini/issues"
+  },
+  "homepage": "https://github.com/harukiwen330/Player-Mini#readme",
+  "devDependencies": {
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-typescript": "^7.21.0",
+    "@types/jest": "^29.5.0",
+    "install": "^0.13.0",
+    "jest": "^29.5.0",
+    "npm": "^9.6.2"
+  }
+}
