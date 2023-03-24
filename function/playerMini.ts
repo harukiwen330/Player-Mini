@@ -1,53 +1,61 @@
 export function parseDurationToSeconds(duration: string): number | Error {
-    let passedT = false;
-    let stack: string[] = [];
-    let years: number = 0;
-    let weeks: number = 0;
-    let days: number = 0;
-    let hours: number = 0;
-    let minutes: number = 0;
-    let seconds: number = 0;
-    if (duration[0] !== "P") return new Error("Invalid duration format");
-    for (let unit = 1; unit < duration.length; unit++) {
-        // Store num in the stack as string. Parse it and turn into variable
-        // switch Case for 'Y', 'W', 'D', 'H', 'M', 'S' 
-            // 'Y'
-       
-        // Check if (passedT === false && duration === "M") new Error("Months not supported");
+    if (duration[0] !== "P") {
+        return new Error("Invalid duration format.");
+    }
+    duration = duration.substring(1);
+
+    let [dateDuration, timeDuration] = duration.split("T");
+
+    console.log(`timeduration : ${timeDuration}`);
+
+    const dateKeys = ["Y", "M", "W", "D"];
+    const timeKeys = ["H", "M", "S"];
+    const dateMap = new Map<string, number>();
+    const timeMap = new Map<string, number>();
+
+    if (dateDuration !== undefined) {
+        for (let key of dateKeys) {
+            let [val, rest] = extractValue(dateDuration, key);
+            if (key === "M" && val > 0) return new Error("Month value is not accepted.");
+            dateMap.set(key, val as number);
+            dateDuration = rest as string;
+        }
+        if (dateDuration !== "") {
+            return new Error("Invalid duration format.");
+        }
+    }
+    
+    if (timeDuration !== undefined) {
+        for (let key of timeKeys) {
+            let [val, rest] = extractValue(timeDuration, key);
+            timeMap.set(key, val as number);
+            timeDuration = rest as string;
+        }
+        if (timeDuration !== "") {
+            return new Error("Invalid duration format.");
+        }
     }
 
-    return generateTotalSeconds(years, weeks, days, hours, minutes, seconds);
+    return secondConverter(dateMap, timeMap);
 }
 
-function generateTotalSeconds(years: number, weeks: number, days: number, hours: number, minutes: number, seconds: number): number {
-    return years * 365 * 24 * 60 * 60 + weeks * 7 * 24 * 60 * 60 + days * 24 * 60 * 60 + hours * 60 * 60 + minutes * 60 + (seconds || 0);
+function extractValue(all, match) {
+    const [val, rest] = all.split(match);
+    if (rest === undefined) {
+        return [0, val];
+    }
+    return [parseFloat(val), rest];
 }
 
-// export function parseDurationToSeconds(duration: string): number | Error {
-//     const durationRegex = /P(?:([0-9]+)Y)?(?:([0-9]+)M)?(?:([0-9]+)W)?(?:([0-9]+)D)?T(?:([0-9]+)H)?(?:([0-9]+)M)?(?:([0-9.]+)S)?/;
+function secondConverter(dateMap: Map<string, number>, timeMap: Map<string, number>) {
+    return (
+        (dateMap.get("Y") || 0) * 365 * 24 * 60 * 60 +
+        (dateMap.get("W") || 0) * 7 * 24 * 60 * 60 +
+        (dateMap.get("D") || 0) * 24 * 60 * 60 +
+        (timeMap.get("H") || 0) * 60 * 60 +
+        (timeMap.get("M") || 0) * 60 +
+        (timeMap.get("S") || 0)
+    );
+}
 
-//     if (!durationRegex.test(duration)) {
-//         return new Error("Invalid duration format");
-//     }
-
-//     const [, years, months, weeks, days, hours, minutes, seconds] = duration.match(durationRegex)!.map((matched) => {
-//         if (matched === undefined) {
-//             return 0;
-//         }
-//         return Number(matched);
-//     });
-
-//     if (months) {
-//         return new Error("Months not supported");
-//     }
-
-//     const totalSeconds =
-//         years * 31536000 + // 365 * 24 * 60 * 60
-//         weeks * 604800 + // 7 * 24 * 60 * 60
-//         days * 86400 + // 24 * 60 * 60
-//         hours * 3600 + // 60 * 60
-//         minutes * 60 +
-//         (seconds || 0);
-
-//     return totalSeconds;
-// }
+console.log(parseDurationToSeconds("PT1H1.2"));
