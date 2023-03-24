@@ -24,7 +24,7 @@ export function parseDurationToSeconds(duration: string): number | Error {
             return new Error("Invalid duration format.");
         }
     }
-    
+
     if (timeDuration !== undefined) {
         for (let key of timeKeys) {
             let [val, rest] = extractValue(timeDuration, key);
@@ -57,5 +57,3 @@ function secondConverter(dateMap: Map<string, number>, timeMap: Map<string, numb
         (timeMap.get("S") || 0)
     );
 }
-
-console.log(parseDurationToSeconds("PT1H1.2"));
