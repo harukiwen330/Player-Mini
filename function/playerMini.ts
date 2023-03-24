@@ -6,9 +6,11 @@ export function parseDurationToSeconds(duration: string): number | Error {
 
     let [dateDuration, timeDuration] = duration.split("T");
 
-    console.log(`timeduration : ${timeDuration}`);
-
-    const dateKeys = ["Y", "M", "W", "D"];
+    if (dateDuration.includes("M")) {
+        return new Error("Month value is not accepted.");
+    }
+    
+    const dateKeys = ["Y", "W", "D"];
     const timeKeys = ["H", "M", "S"];
     const dateMap = new Map<string, number>();
     const timeMap = new Map<string, number>();
@@ -16,7 +18,6 @@ export function parseDurationToSeconds(duration: string): number | Error {
     if (dateDuration !== undefined) {
         for (let key of dateKeys) {
             let [val, rest] = extractValue(dateDuration, key);
-            if (key === "M" && val > 0) return new Error("Month value is not accepted.");
             dateMap.set(key, val as number);
             dateDuration = rest as string;
         }
